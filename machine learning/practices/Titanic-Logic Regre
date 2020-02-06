@@ -1,0 +1,64 @@
+#Logistic Regression 逻辑回归算法
+import pandas as pd
+import numpy as np
+
+data_test=pd.read_csv('C:\\Users\\Reytine\\Downloads\\titanic\\test.csv')
+data_train=pd.read_csv('C:\\Users\\Reytine\\Downloads\\titanic\\train.csv')
+
+data_train.info()
+#可见Age部分存在部分空值，此处要对数据进行第一次处理
+#Cabin是仓位，理论上来说各个舱室对死亡率会有影响，但是由于数据缺失较多且初学，先不考虑cabin的影响，故不对cabin
+#        的空值进行处理
+
+data_train.describe()
+#对各特征值features的均值进行分析得到结论
+
+#1. 平均存活率为0.38
+#2. 2/3等仓的存活率高于1等仓
+#3. 存货人的年纪大部分为29左右
+
+#数据清洗
+
+data_train.loc[data_train["Sex"]=="male","Sex"]=1
+data_train.loc[data_train["Sex"]=="female","Sex"]=0
+data_train.head()
+
+predictors = ["Pclass","Age","SibSp","Parch","Fare","Sex","Embarked"]
+
+data_train.loc[data_train["Embarked"]=="S","Embarked"]=0
+data_train.loc[data_train["Embarked"]=="C","Embarked"]=1
+data_train.loc[data_train["Embarked"]=="Q","Embarked"]=2
+data_train["Embarked"]=data_train["Embarked"].fillna("0")
+
+x=data_train[predictors].as_matrix()
+y=data_train['Survived'].as_matrix()
+
+#逻辑回归办法
+#第一步筛选有效特征值
+from sklearn.linear_model import LogisticRegression as LR
+from sklearn.linear_model import RandomizedLogisticRegression as RLR
+rlr = RLR()
+rlr.fit(x,y)
+rlr.get_support()
+
+x2=data_train[data_train[predictors].columns[rlr.get_support()]].as_matrix()
+lr=LR()
+
+data_test["Age"] = data_test["Age"].fillna(data_test["Age"].median())
+data_test["Fare"] = data_test["Fare"].fillna(data_test["Fare"].median())
+data_test.loc[data_test["Embarked"]=="S","Embarked"]=0
+data_test.loc[data_test["Embarked"]=="C","Embarked"]=1
+data_test.loc[data_test["Embarked"]=="Q","Embarked"]=2
+data_test["Embarked"]=data_test["Embarked"].fillna(0)
+data_test.loc[data_test["Sex"]=="male","Sex"]=1
+data_test.loc[data_test["Sex"]=="female","Sex"]=0
+
+xtest=data_test[['Pclass', 'Fare', 'Sex']]
+ytest=lr.predict(xtest)
+data_test["Survived"]=lr.predict(xtest)
+data_test[['PassengerId',"Survived"]].to_csv('C:\\Users\\Reytine\\Downloads\\titanic\\test_result.csv',index=False)
+lr.fit(x2,y)
+print(lr.score(x2,y))
+print(data_train[predictors].columns[rlr.get_support()])
+
+#提交结果为0.76，排名14000+，有待进步
