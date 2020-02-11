@@ -9,3 +9,6 @@ to keep a record of how my learning is going
 
 #2020-2-6
 #第一次提交Kaggle比赛结果后得到了排名，加油！---using Logistic Regression
+
+#2020-2-11
+#开始尝试处理新人赛题目——淘宝离线数据分析
