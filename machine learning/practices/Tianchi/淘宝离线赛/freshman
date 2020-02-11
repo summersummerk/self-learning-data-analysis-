@@ -1,1 +1,14 @@
 #天池数据处理
+#link right here:https://tianchi.aliyun.com/notebook-ai/detail?postId=6471
+#to formally launch my training on machine learning
+
+#关于阿里巴巴线下赛的计算逻辑
+#第一步分析要预测的对象是什么
+#即1.每个用户对2.列表中物料3.是否购买（predict set）
+
+#原始数据中与结果相关联的特征值有哪些呢？看了下别人的代码，其中最关键的部分其实在于如何选取特征值
+#18号即前一天的购物车相关数量
+#购物车到购买的转化率
+#没有在购物车的部分，点击量以及收藏以及转化率
+#购买频次
+#1.19添加，好像是根据关联性先分类，然后再处理的吧
